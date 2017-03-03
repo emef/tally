@@ -1,6 +1,7 @@
-package tally
+package deepend
 
 import (
+	"flag"
 	"io/ioutil"
 	"log"
 	"os"
@@ -9,6 +10,11 @@ import (
 
 	"github.com/golang/protobuf/proto"
 	"github.com/satori/go.uuid"
+)
+
+var (
+	writerQueueSize = flag.Int(
+		"writer_queue_size", 10, "Writer max queue size")
 )
 
 type FlushWriter struct {
@@ -23,7 +29,7 @@ type WriterConfig struct {
 }
 
 func CreateAndStartFlushWriter(config *WriterConfig) *FlushWriter {
-	aggregators := make(chan *CounterAggregator)
+	aggregators := make(chan *CounterAggregator, *writerQueueSize)
 	done := make(chan interface{})
 
 	writer := &FlushWriter{aggregators, done, config}
@@ -55,24 +61,27 @@ func (writer *FlushWriter) start() {
 		select {
 		case aggregator := <-writer.aggregators:
 			combinedAggregator.CombineInPlace(aggregator)
-			println("combined aggregator")
 
 		case <-ticker.C:
-			if !combinedAggregator.IsEmpty() {
-				aggregatorToFlush := combinedAggregator
-				go flushAggregator(aggregatorToFlush, writer.config)
-				combinedAggregator = NewCounterAggregator()
-				println("wrote block")
-			}
+			aggregatorToFlush := combinedAggregator
+			go flushAggregator(aggregatorToFlush, writer.config)
+			combinedAggregator = NewCounterAggregator()
 
 		case <-writer.done:
-			println("writer done")
-			return
+			if len(writer.aggregators) == 0 {
+				close(writer.aggregators)
+				flushAggregator(combinedAggregator, writer.config)
+				return
+			}
 		}
 	}
 }
 
 func flushAggregator(aggregator *CounterAggregator, config *WriterConfig) {
+	if aggregator.IsEmpty() {
+		return
+	}
+
 	block := aggregator.AsBlock()
 
 	data, err := proto.Marshal(block)

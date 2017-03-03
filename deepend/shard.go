@@ -1,8 +1,6 @@
-package tally
+package deepend
 
 import (
-	"time"
-
 	"github.com/emef/tally/pb"
 )
 
@@ -13,21 +11,18 @@ type CounterShard struct {
 }
 
 type ShardConfig struct {
-	NumWorkers         int
-	WorkerFlushEvery   time.Duration
-	WriterFlushEvery   time.Duration
-	FlushBaseDirectory string
+	Workers          int
+	AggregatorConfig *AggregatorConfig
+	WriterConfig     *WriterConfig
 }
 
 func NewCounterShard(config *ShardConfig) *CounterShard {
-	writer := CreateAndStartFlushWriter(&WriterConfig{
-		config.WriterFlushEvery, config.FlushBaseDirectory})
+	writer := CreateAndStartFlushWriter(config.WriterConfig)
 
-	workerConfig := &AggregatorConfig{config.WorkerFlushEvery}
-	workers := make([]*AggregatorWorker, config.NumWorkers)
+	workers := make([]*AggregatorWorker, config.Workers)
 	for i := range workers {
 		workers[i] = CreateAndStartAggregatorWorker(
-			writer.GetAggregatorChannel(), workerConfig)
+			writer.GetAggregatorChannel(), config.AggregatorConfig)
 	}
 
 	requestChannels := make([]chan<- *pb.RecordCounterRequest, 0)
@@ -38,6 +33,14 @@ func NewCounterShard(config *ShardConfig) *CounterShard {
 	dispatcher := NewRequestDispatcher(requestChannels)
 
 	return &CounterShard{dispatcher, workers, writer}
+}
+
+func (shard *CounterShard) Stop() {
+	// TODO: more graceful shutdown? potential data loss here
+	shard.writer.Stop()
+	for _, worker := range shard.workers {
+		worker.Stop()
+	}
 }
 
 func (shard *CounterShard) RecordCounter(request *pb.RecordCounterRequest) {

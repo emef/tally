@@ -1,14 +1,12 @@
-package tally
+package deepend
 
 import (
-	"crypto/md5"
-	"encoding/binary"
 	"github.com/emef/tally/pb"
 )
 
 type CounterAggregator struct {
-	counters          map[pb.RecordKey]*pb.CounterValues
-	nameCodeMapping   map[string]int32
+	counters map[pb.RecordKey]*pb.CounterValues
+	nameCodeMapping map[string]int32
 	sourceCodeMapping map[string]int32
 }
 
@@ -41,8 +39,8 @@ func (aggregator *CounterAggregator) AddInPlace(
 	values *pb.CounterValues) {
 
 	key := pb.RecordKey{
-		NameCode:    getOrSetCode(name, aggregator.nameCodeMapping),
-		SourceCode:  getOrSetCode(source, aggregator.sourceCodeMapping),
+		NameCode: getOrSetCode(name, aggregator.nameCodeMapping),
+		SourceCode: getOrSetCode(source, aggregator.sourceCodeMapping),
 		EpochMinute: epochMinute}
 
 	existing, ok := aggregator.counters[key]
@@ -69,9 +67,9 @@ func (aggregator *CounterAggregator) AsBlock() *pb.RecordBlock {
 	}
 
 	return &pb.RecordBlock{
-		NameCodeMapping:   aggregator.nameCodeMapping,
+		NameCodeMapping: aggregator.nameCodeMapping,
 		SourceCodeMapping: aggregator.sourceCodeMapping,
-		Entries:           entries}
+		Entries: entries}
 }
 
 func getOrSetCode(
@@ -95,28 +93,16 @@ func makeReverseMap(codeMap map[string]int32) map[int32]string {
 	return reverseMap
 }
 
-func HashCode(source string) int64 {
-	strMd5 := md5.Sum([]byte(source))
-	hashCode, _ := binary.Varint(strMd5[:])
-	return hashCode
-}
-
-func HashToRange(source string, minValue int64, maxValue int64) int64 {
-	hash := HashCode(source) & 0x7FFFFFFF
-	delta := hash % (1 + maxValue - minValue)
-	return minValue + delta
-}
-
 func min(x, y float32) float32 {
-	if x < y {
-		return x
-	}
-	return y
+    if x < y {
+        return x
+    }
+    return y
 }
 
 func max(x, y float32) float32 {
-	if x > y {
-		return x
-	}
-	return y
+    if x > y {
+        return x
+    }
+    return y
 }

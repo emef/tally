@@ -1,4 +1,4 @@
-package tally
+package deepend
 
 import (
 	"github.com/emef/tally/pb"

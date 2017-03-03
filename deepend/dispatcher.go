@@ -1,6 +1,7 @@
-package tally
+package deepend
 
 import (
+	"github.com/emef/tally"
 	"github.com/emef/tally/pb"
 )
 
@@ -15,7 +16,7 @@ func NewRequestDispatcher(
 
 func (dispatcher *RequestDispatcher) Dispatch(request *pb.RecordCounterRequest) {
 	maxIndex := int64(len(dispatcher.channels) - 1)
-	channelIndex := HashToRange(request.Name, 0, maxIndex)
+	channelIndex := tally.HashToRange(request.Name, 0, maxIndex)
 	dispatcher.channels[channelIndex] <- request
 	println("dispatched request")
 }

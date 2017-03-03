@@ -8,13 +8,13 @@ import (
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"github.com/emef/tally"
+	"github.com/emef/tally/deepend"
 	"github.com/emef/tally/pb"
 	"google.golang.org/grpc/reflection"
 )
 
 type RecordCounterService struct {
-	shard *tally.CounterShard
+	shard *deepend.CounterShard
 }
 
 var ok = &pb.RecordCounterResponse{Ok: true}
@@ -40,11 +40,13 @@ func main() {
 
 	flag.Parse()
 
-	shard := tally.NewCounterShard(&tally.ShardConfig{
-		NumWorkers: *numWorkers,
-		WorkerFlushEvery: time.Second * time.Duration(*workerFlushEvery),
-		WriterFlushEvery: time.Second * time.Duration(*writerFlushEvery),
-		FlushBaseDirectory: *writeDirectory})
+	shard := deepend.NewCounterShard(&deepend.ShardConfig{
+		Workers: *numWorkers,
+		AggregatorConfig: &deepend.AggregatorConfig{
+			FlushEvery: time.Second * time.Duration(*workerFlushEvery)},
+		WriterConfig: &deepend.WriterConfig{
+			FlushEvery: time.Second * time.Duration(*writerFlushEvery),
+			BaseDirectory: *writeDirectory}})
 
 	service := &RecordCounterService{shard}
 

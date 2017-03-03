@@ -1,8 +1,15 @@
-package tally
+package deepend
 
 import (
-	"github.com/emef/tally/pb"
+	"flag"
 	"time"
+
+	"github.com/emef/tally/pb"
+)
+
+var (
+	workerQueueSize = flag.Int(
+		"worker_queue_size", 10, "Worker max queue size")
 )
 
 type AggregatorWorker struct {
@@ -21,7 +28,7 @@ func CreateAndStartAggregatorWorker(
 	config *AggregatorConfig) *AggregatorWorker {
 
 	done := make(chan interface{})
-	requests := make(chan *pb.RecordCounterRequest)
+	requests := make(chan *pb.RecordCounterRequest, *workerQueueSize)
 
 	worker := &AggregatorWorker{requests, flushChannel, done, config}
 	go worker.start()
@@ -58,6 +65,10 @@ func (worker *AggregatorWorker) start() {
 			}
 
 		case <-worker.done:
+			close(worker.requests)
+			if !aggregator.IsEmpty() {
+				worker.flushChannel <- aggregator
+			}
 			return
 		}
 	}
