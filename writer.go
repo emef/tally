@@ -13,12 +13,12 @@ import (
 
 type FlushWriter struct {
 	aggregators chan *CounterAggregator
-	done chan interface{}
-	config *WriterConfig
+	done        chan interface{}
+	config      *WriterConfig
 }
 
 type WriterConfig struct {
-	FlushEvery time.Duration
+	FlushEvery    time.Duration
 	BaseDirectory string
 }
 

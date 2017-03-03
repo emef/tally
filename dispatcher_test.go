@@ -1,8 +1,8 @@
 package tally
 
 import (
-	"testing"
 	"github.com/emef/tally/pb"
+	"testing"
 )
 
 func TestRequestDispatcher(t *testing.T) {
@@ -23,7 +23,7 @@ func TestRequestDispatcher(t *testing.T) {
 	lenChan2 := len(chan2)
 	lenChan3 := len(chan3)
 
-	if lenChan1 + lenChan2 + lenChan3 != n {
+	if lenChan1+lenChan2+lenChan3 != n {
 		t.Errorf("All requests were not dispatched")
 	}
 

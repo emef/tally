@@ -1,9 +1,9 @@
 package tally
 
 import (
+	"github.com/emef/tally/pb"
 	"testing"
 	"time"
-	"github.com/emef/tally/pb"
 )
 
 func TestAggregator(t *testing.T) {
@@ -84,12 +84,12 @@ func makeRequest(
 	value float32) *pb.RecordCounterRequest {
 
 	return &pb.RecordCounterRequest{
-		Name: name,
-		Source: source,
+		Name:        name,
+		Source:      source,
 		EpochMinute: 0,
 		Values: &pb.CounterValues{
 			Count: 1,
-			Sum: value,
-			Min: value,
-			Max: value}}
+			Sum:   value,
+			Min:   value,
+			Max:   value}}
 }

@@ -1,15 +1,15 @@
 package tally
 
 import (
-	"time"
 	"github.com/emef/tally/pb"
+	"time"
 )
 
 type AggregatorWorker struct {
-	requests chan *pb.RecordCounterRequest
+	requests     chan *pb.RecordCounterRequest
 	flushChannel chan<- *CounterAggregator
-	done chan interface{}
-	config *AggregatorConfig
+	done         chan interface{}
+	config       *AggregatorConfig
 }
 
 type AggregatorConfig struct {

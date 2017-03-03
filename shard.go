@@ -8,14 +8,14 @@ import (
 
 type CounterShard struct {
 	dispatcher *RequestDispatcher
-	workers []*AggregatorWorker
-	writer *FlushWriter
+	workers    []*AggregatorWorker
+	writer     *FlushWriter
 }
 
 type ShardConfig struct {
-	NumWorkers int
-	WorkerFlushEvery time.Duration
-	WriterFlushEvery time.Duration
+	NumWorkers         int
+	WorkerFlushEvery   time.Duration
+	WriterFlushEvery   time.Duration
 	FlushBaseDirectory string
 }
 
