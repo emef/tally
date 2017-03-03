@@ -1,0 +1,32 @@
+syntax = "proto3";
+package pb;
+
+import "google/api/annotations.proto";
+
+message CounterValues {
+  int32 count = 1;
+  float sum = 2;
+  float min = 3;
+  float max = 4;
+}
+
+message RecordCounterRequest {
+  string name = 1;
+  string source = 2;
+  int32 epochMinute = 3;
+  CounterValues values = 4;
+}
+
+message RecordCounterResponse {
+  bool ok = 1;
+  string error = 2;
+}
+
+service RecordCounterService {
+  rpc RecordCounter(RecordCounterRequest) returns (RecordCounterResponse) {
+    option (google.api.http) = {
+      post: "/v1/tally/counter/record"
+      body: "*"
+    };
+  }
+}

@@ -1,0 +1,21 @@
+syntax = "proto3";
+package pb;
+
+import "api.proto";
+
+message RecordKey {
+  int32 nameCode = 1;
+  int32 sourceCode = 2;
+  int32 epochMinute = 3;
+}
+
+message RecordEntry {
+  RecordKey key = 1;
+  CounterValues values = 2;
+}
+
+message RecordBlock {
+  map<string, int32> nameCodeMapping = 1;
+  map<string, int32> sourceCodeMapping = 2;
+  repeated RecordEntry entries = 3;
+}
