@@ -39,7 +39,7 @@ func TestDirectoryWatcher(t *testing.T) {
 	}()
 
 	// Give watcher enough time to check after all files written
-	<- done
+	<-done
 	time.Sleep(1 * time.Millisecond)
 	watcher.Stop()
 

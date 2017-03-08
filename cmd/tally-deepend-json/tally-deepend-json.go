@@ -5,15 +5,15 @@ import (
 	"net/http"
 
 	"github.com/golang/glog"
-	"golang.org/x/net/context"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
 	gw "github.com/emef/tally/pb"
 )
 
 var (
-	port = flag.String("port", ":8080", "port to run this proxy")
+	port     = flag.String("port", ":8080", "port to run this proxy")
 	endpoint = flag.String("endpoint", ":5019", "endpoint of tbackend")
 )
 

@@ -6,10 +6,10 @@ import (
 	"net"
 	"time"
 
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 	"github.com/emef/tally/deepend"
 	"github.com/emef/tally/pb"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -45,7 +45,7 @@ func main() {
 		AggregatorConfig: &deepend.AggregatorConfig{
 			FlushEvery: time.Second * time.Duration(*workerFlushEvery)},
 		WriterConfig: &deepend.WriterConfig{
-			FlushEvery: time.Second * time.Duration(*writerFlushEvery),
+			FlushEvery:    time.Second * time.Duration(*writerFlushEvery),
 			BaseDirectory: *writeDirectory}})
 
 	service := &RecordCounterService{shard}

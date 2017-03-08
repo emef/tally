@@ -10,9 +10,9 @@ import (
 	"github.com/emef/tally/backend"
 	"github.com/emef/tally/pb"
 	"github.com/golang/protobuf/proto"
-	"google.golang.org/grpc/reflection"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type QueryCounterService struct {
@@ -31,7 +31,7 @@ func (svc *QueryCounterService) GetCounter(
 		request.EndEpochMinute)
 
 	resp := &pb.GetCounterResponse{
-		Ok: true,
+		Ok:     true,
 		Values: values}
 
 	return resp, nil

@@ -10,15 +10,15 @@ import (
 )
 
 type Indexer struct {
-	blocks chan *pb.RecordBlock
-	done chan interface{}
+	blocks               chan *pb.RecordBlock
+	done                 chan interface{}
 	nameSourceToIndexMap nameSourceMap
 }
 
 func CreateAndStartIndexer(blocks chan *pb.RecordBlock) *Indexer {
 	indexer := &Indexer{
-		blocks: blocks,
-		done: make(chan interface{}),
+		blocks:               blocks,
+		done:                 make(chan interface{}),
 		nameSourceToIndexMap: newNameSourceMap()}
 
 	go indexer.start()
@@ -106,7 +106,7 @@ func (nameMap *nameSourceMap) getOrCreate(name, source string, create bool) *tre
 
 type treeItem struct {
 	epochMinute int32
-	values *pb.CounterValues
+	values      *pb.CounterValues
 }
 
 func (item treeItem) Less(other llrb.Item) bool {

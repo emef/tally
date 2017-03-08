@@ -1,8 +1,8 @@
 package backend
 
 import (
-	"io/ioutil"
 	"flag"
+	"io/ioutil"
 	"path"
 	"time"
 )
@@ -13,10 +13,10 @@ var (
 )
 
 type DirectoryWatcher struct {
-	directories []string
-	checkEvery time.Duration
+	directories  []string
+	checkEvery   time.Duration
 	newFilePaths chan string
-	done chan interface{}
+	done         chan interface{}
 }
 
 func CreateAndStartDirectoryWatcher(

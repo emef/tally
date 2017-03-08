@@ -8,10 +8,10 @@ import (
 
 func TestShard(t *testing.T) {
 	config := &ShardConfig{
-		Workers:         1,
+		Workers:          1,
 		AggregatorConfig: &AggregatorConfig{FlushEvery: time.Second},
 		WriterConfig: &WriterConfig{
-			FlushEvery:   time.Second * 5,
+			FlushEvery:    time.Second * 5,
 			BaseDirectory: "/tmp/shard"}}
 
 	shard := NewCounterShard(config)

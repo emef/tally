@@ -6,8 +6,8 @@ import (
 )
 
 type CounterAggregator struct {
-	counters map[pb.RecordKey]*pb.CounterValues
-	nameCodeMapping map[string]int32
+	counters          map[pb.RecordKey]*pb.CounterValues
+	nameCodeMapping   map[string]int32
 	sourceCodeMapping map[string]int32
 }
 
@@ -40,8 +40,8 @@ func (aggregator *CounterAggregator) AddInPlace(
 	values *pb.CounterValues) {
 
 	key := pb.RecordKey{
-		NameCode: getOrSetCode(name, aggregator.nameCodeMapping),
-		SourceCode: getOrSetCode(source, aggregator.sourceCodeMapping),
+		NameCode:    getOrSetCode(name, aggregator.nameCodeMapping),
+		SourceCode:  getOrSetCode(source, aggregator.sourceCodeMapping),
 		EpochMinute: epochMinute}
 
 	existing, ok := aggregator.counters[key]
@@ -65,9 +65,9 @@ func (aggregator *CounterAggregator) AsBlock() *pb.RecordBlock {
 	}
 
 	return &pb.RecordBlock{
-		NameCodeMapping: lib.MakeReverseMap(aggregator.nameCodeMapping),
+		NameCodeMapping:   lib.MakeReverseMap(aggregator.nameCodeMapping),
 		SourceCodeMapping: lib.MakeReverseMap(aggregator.sourceCodeMapping),
-		Entries: entries}
+		Entries:           entries}
 }
 
 func getOrSetCode(

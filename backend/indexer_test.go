@@ -12,10 +12,10 @@ func TestIndexer(t *testing.T) {
 	blocks := make(chan *pb.RecordBlock, 2)
 
 	blocks <- &pb.RecordBlock{
-		NameCodeMapping: map[int32]string {
+		NameCodeMapping: map[int32]string{
 			0: "c1",
 			1: "c2"},
-		SourceCodeMapping: map[int32]string {0: "s"},
+		SourceCodeMapping: map[int32]string{0: "s"},
 		Entries: []*pb.RecordEntry{
 			entry(0, 0, 0, values(1, 1, 1, 1)),
 			entry(0, 0, 1, values(2, 1, 2, 2)),
@@ -23,11 +23,11 @@ func TestIndexer(t *testing.T) {
 			entry(1, 1, 3, values(4, 4, 1, 1))}}
 
 	blocks <- &pb.RecordBlock{
-		NameCodeMapping: map[int32]string {
+		NameCodeMapping: map[int32]string{
 			1: "c1",
 			0: "c2",
 			2: "c3"},
-		SourceCodeMapping: map[int32]string {0: "s"},
+		SourceCodeMapping: map[int32]string{0: "s"},
 		Entries: []*pb.RecordEntry{
 			entry(0, 0, 0, values(1, 1, 1, 1)),
 			entry(1, 0, 0, values(1, 1, 1, 1)),
@@ -77,9 +77,9 @@ func TestTreeIndex(t *testing.T) {
 	actual := index.query(2, 49)
 
 	expected := map[int32]*pb.CounterValues{
-		2: values(3, 2, 1, 2),
-		3: values(3, 2, 1, 2),
-		8: values(8, 1, 8, 8),
+		2:  values(3, 2, 1, 2),
+		3:  values(3, 2, 1, 2),
+		8:  values(8, 1, 8, 8),
 		10: values(10, 5, 2, 1)}
 
 	if !reflect.DeepEqual(actual, expected) {
@@ -93,8 +93,8 @@ func entry(
 
 	return &pb.RecordEntry{
 		Key: &pb.RecordKey{
-			NameCode: nameCode,
-			SourceCode: sourceCode,
+			NameCode:    nameCode,
+			SourceCode:  sourceCode,
 			EpochMinute: epochMinute},
 		Values: values}
 }

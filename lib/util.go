@@ -13,22 +13,22 @@ func MakeReverseMap(codeMap map[string]int32) map[int32]string {
 }
 
 func AddCountersInPlace(left, right *pb.CounterValues) {
-		left.Count += right.Count
-		left.Sum += right.Sum
-		left.Min = min(left.Min, right.Min)
-		left.Max = max(left.Max, right.Max)
+	left.Count += right.Count
+	left.Sum += right.Sum
+	left.Min = min(left.Min, right.Min)
+	left.Max = max(left.Max, right.Max)
 }
 
 func min(x, y float32) float32 {
-    if x < y {
-        return x
-    }
-    return y
+	if x < y {
+		return x
+	}
+	return y
 }
 
 func max(x, y float32) float32 {
-    if x > y {
-        return x
-    }
-    return y
+	if x > y {
+		return x
+	}
+	return y
 }
