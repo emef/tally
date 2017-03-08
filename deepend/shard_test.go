@@ -8,10 +8,11 @@ import (
 
 func TestShard(t *testing.T) {
 	config := &ShardConfig{
-		numWorkers:         1,
-		workerFlushEvery:   time.Second,
-		writerFlushEvery:   time.Second * 5,
-		flushBaseDirectory: "/tmp/shard"}
+		Workers:         1,
+		AggregatorConfig: &AggregatorConfig{FlushEvery: time.Second},
+		WriterConfig: &WriterConfig{
+			FlushEvery:   time.Second * 5,
+			BaseDirectory: "/tmp/shard"}}
 
 	shard := NewCounterShard(config)
 
@@ -25,5 +26,5 @@ func TestShard(t *testing.T) {
 			Min:   10.0,
 			Max:   10.0}})
 
-	time.Sleep(time.Second * 20)
+	shard.Stop()
 }

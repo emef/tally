@@ -86,6 +86,7 @@ func flushAggregator(aggregator *CounterAggregator, config *WriterConfig) {
 
 	data, err := proto.Marshal(block)
 	if err != nil {
+		// TODO proper logging; don't log if directory exists
 		log.Fatal("marshaling error: ", err)
 		return
 	}

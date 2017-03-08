@@ -1,6 +1,7 @@
 package deepend
 
 import (
+	"github.com/emef/tally/lib"
 	"github.com/emef/tally/pb"
 )
 
@@ -22,8 +23,8 @@ func (aggregator *CounterAggregator) IsEmpty() bool {
 }
 
 func (aggregator *CounterAggregator) CombineInPlace(other *CounterAggregator) {
-	reverseNameMap := makeReverseMap(other.nameCodeMapping)
-	reverseSourceMap := makeReverseMap(other.sourceCodeMapping)
+	reverseNameMap := lib.MakeReverseMap(other.nameCodeMapping)
+	reverseSourceMap := lib.MakeReverseMap(other.sourceCodeMapping)
 
 	for key, values := range other.counters {
 		name := reverseNameMap[key.NameCode]
@@ -45,10 +46,7 @@ func (aggregator *CounterAggregator) AddInPlace(
 
 	existing, ok := aggregator.counters[key]
 	if ok {
-		existing.Count += values.Count
-		existing.Sum += values.Sum
-		existing.Min = min(existing.Min, values.Min)
-		existing.Max = max(existing.Max, values.Max)
+		lib.AddCountersInPlace(existing, values)
 	} else {
 		aggregator.counters[key] = values
 	}
@@ -67,8 +65,8 @@ func (aggregator *CounterAggregator) AsBlock() *pb.RecordBlock {
 	}
 
 	return &pb.RecordBlock{
-		NameCodeMapping: aggregator.nameCodeMapping,
-		SourceCodeMapping: aggregator.sourceCodeMapping,
+		NameCodeMapping: lib.MakeReverseMap(aggregator.nameCodeMapping),
+		SourceCodeMapping: lib.MakeReverseMap(aggregator.sourceCodeMapping),
 		Entries: entries}
 }
 
@@ -83,26 +81,4 @@ func getOrSetCode(
 	}
 
 	return code
-}
-
-func makeReverseMap(codeMap map[string]int32) map[int32]string {
-	reverseMap := make(map[int32]string, len(codeMap))
-	for key, code := range codeMap {
-		reverseMap[code] = key
-	}
-	return reverseMap
-}
-
-func min(x, y float32) float32 {
-    if x < y {
-        return x
-    }
-    return y
-}
-
-func max(x, y float32) float32 {
-    if x > y {
-        return x
-    }
-    return y
 }

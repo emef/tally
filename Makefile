@@ -16,11 +16,13 @@ install:
 	go install ./...
 
 proto:
+	go get google.golang.org/grpc
 	go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 	go get github.com/golang/protobuf/protoc-gen-go
 
 	$(PROTOC) \
 		-I/usr/local/include \
+		-I/usr/include \
 		-I. \
 		-I$$GOPATH/src \
 		-I$$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
@@ -29,6 +31,7 @@ proto:
 
 	$(PROTOC) \
 		-I/usr/local/include \
+		-I/usr/include \
 		-I. \
 		-I$$GOPATH/src \
 		-I$$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
@@ -38,6 +41,12 @@ proto:
 test:
 	go test -v -cpu 1,4 ./...
 
+docker-build:
+	docker build -t emef/tally .
+
+docker-push: docker-build
+	docker push emef/tally:latest
+
 .PHONY: \
 	all \
 	build \
@@ -45,4 +54,6 @@ test:
 	clean \
 	test \
 	install \
-	proto
+	proto \
+	docker-build \
+	docker-push

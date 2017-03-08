@@ -15,7 +15,7 @@ message RecordEntry {
 }
 
 message RecordBlock {
-  map<string, int32> nameCodeMapping = 1;
-  map<string, int32> sourceCodeMapping = 2;
+  map<int32, string> nameCodeMapping = 1;
+  map<int32, string> sourceCodeMapping = 2;
   repeated RecordEntry entries = 3;
 }

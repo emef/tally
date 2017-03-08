@@ -1,0 +1,58 @@
+version: "2"
+
+volumes:
+  data-volume:
+
+services:
+  deepend:
+    image: emef/tally:latest
+    volumes:
+      - data-volume:/var/lib/data
+    command: [
+      "tally-deepend",
+      "-port", ":5019",
+      "-writer_flush_every", "10",
+      "-write_directory", "/var/lib/data"
+    ]
+    expose:
+      - "5019"
+
+  deepend-json:
+    image: emef/tally:latest
+    volumes:
+      - data-volume:/var/lib/data
+    command: [
+      "tally-deepend-json",
+      "-port", ":8080",
+      "-endpoint", "deepend:5019"
+    ]
+    links:
+      - deepend
+    ports:
+      - "8080:8080"
+
+  backend:
+    image: emef/tally:latest
+    volumes:
+      - data-volume:/var/lib/data
+    command: [
+      "tally-backend",
+      "-port", ":5020",
+      "-index_directory", "/var/lib/data"
+    ]
+    ports:
+      - "5020"
+
+  backend-json:
+    image: emef/tally:latest
+    volumes:
+      - data-volume:/var/lib/data
+    command: [
+      "tally-backend-json",
+      "-port", ":8081",
+      "-endpoint", "backend:5020"
+    ]
+    links:
+      - backend
+    ports:
+      - "8081:8081"

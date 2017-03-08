@@ -30,3 +30,25 @@ service RecordCounterService {
     };
   }
 }
+
+message GetCounterRequest {
+  string name = 1;
+  string source = 2;
+  int32 startEpochMinute = 3;
+  int32 endEpochMinute = 4;
+}
+
+message GetCounterResponse {
+  bool ok = 1;
+  string error = 2;
+  map<int32, CounterValues> values = 3;
+}
+
+
+service QueryCounterService {
+  rpc GetCounter(GetCounterRequest) returns (GetCounterResponse) {
+    option (google.api.http) = {
+      get: "/v1/tally/counter"
+    };
+  }
+}
