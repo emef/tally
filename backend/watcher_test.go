@@ -27,6 +27,12 @@ func TestDirectoryWatcher(t *testing.T) {
 		filenames[i] = path.Join(directory, fmt.Sprint(i))
 	}
 
+	// Test with subdirectory as well
+	subdir := path.Join(directory, "subdirectory")
+	subdirPath := path.Join(subdir, "subfile")
+	os.Mkdir(subdir, 0777)
+	filenames = append(filenames, subdirPath)
+
 	done := make(chan interface{})
 	defer close(done)
 
@@ -52,6 +58,6 @@ func TestDirectoryWatcher(t *testing.T) {
 	sort.Strings(actualFilenames)
 
 	if !reflect.DeepEqual(filenames, actualFilenames) {
-		t.Fail()
+		t.Errorf("%v != %v", filenames, actualFilenames)
 	}
 }

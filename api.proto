@@ -22,10 +22,26 @@ message RecordCounterResponse {
   string error = 2;
 }
 
+message BulkRecordCounterRequest {
+  repeated RecordCounterRequest requests = 1;
+}
+
+message BulkRecordCounterResponse {
+  bool ok = 1;
+  string error = 2;
+}
+
 service RecordCounterService {
   rpc RecordCounter(RecordCounterRequest) returns (RecordCounterResponse) {
     option (google.api.http) = {
-      post: "/v1/tally/counter/record"
+      post: "/v1/counter/record"
+      body: "*"
+    };
+  }
+
+  rpc BulkRecordCounter(BulkRecordCounterRequest) returns (BulkRecordCounterResponse) {
+    option (google.api.http) = {
+      post: "/v1/counter/bulk_record"
       body: "*"
     };
   }
@@ -43,7 +59,6 @@ message GetCounterResponse {
   string error = 2;
   map<int32, CounterValues> values = 3;
 }
-
 
 service QueryCounterService {
   rpc GetCounter(GetCounterRequest) returns (GetCounterResponse) {

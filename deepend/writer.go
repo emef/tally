@@ -2,12 +2,14 @@ package deepend
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"time"
 
+	"github.com/emef/tally/lib"
 	"github.com/golang/protobuf/proto"
 	"github.com/satori/go.uuid"
 )
@@ -50,11 +52,6 @@ func (writer *FlushWriter) start() {
 	ticker := time.NewTicker(writer.config.FlushEvery)
 	defer ticker.Stop()
 
-	err := os.MkdirAll(writer.config.BaseDirectory, 0766)
-	if err != nil {
-		println("Couldn't mkdir -p")
-	}
-
 	combinedAggregator := NewCounterAggregator()
 
 	for {
@@ -91,7 +88,11 @@ func flushAggregator(aggregator *CounterAggregator, config *WriterConfig) {
 		return
 	}
 
-	filepath := path.Join(config.BaseDirectory, uuid.NewV4().String())
+	directory := path.Join(
+		config.BaseDirectory, fmt.Sprint(lib.NowEpochMinute()))
+	os.MkdirAll(directory, 0766)
+
+	filepath := path.Join(directory, uuid.NewV4().String())
 	err = ioutil.WriteFile(filepath, data, 0766)
 	if err != nil {
 		println("could not flush to file: ", err.Error())

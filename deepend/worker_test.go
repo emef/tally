@@ -67,15 +67,17 @@ func assertCounterEquals(
 
 func getAndAssertPresent(
 	t *testing.T,
-	codeMap map[string]int32,
-	key string) int32 {
+	codeMap map[int32]string,
+	desiredValue string) int32 {
 
-	v, ok := codeMap[key]
-	if !ok {
-		t.Errorf("Key %v missing", key)
+	for key, value := range codeMap {
+		if value == desiredValue {
+			return key
+		}
 	}
 
-	return v
+	t.Errorf("Value %v missing", desiredValue)
+	return 0
 }
 
 func makeRequest(

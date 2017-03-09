@@ -50,19 +50,33 @@ func (watcher *DirectoryWatcher) start() {
 	for {
 		select {
 		case <-ticker.C:
-			for _, directory := range watcher.directories {
+			directories := make([]string, len(watcher.directories))
+			copy(directories, watcher.directories)
+
+			for ; len(directories) > 0; {
+				directory := directories[0]
+				directories = directories[1:len(directories)]
+
 				files, err := ioutil.ReadDir(directory)
 				if err != nil {
 					// TODO: proper logging, handling
 					println(err.Error())
-				} else {
-					for _, file := range files {
-						path := path.Join(directory, file.Name())
-						_, seenThisFile := seenFilePaths[path]
-						if !seenThisFile {
-							watcher.newFilePaths <- path
-							seenFilePaths[path] = true
-						}
+					continue
+				}
+
+				for _, file := range files {
+					path := path.Join(directory, file.Name())
+					_, seenThisFile := seenFilePaths[path]
+
+					if seenThisFile {
+						continue
+					}
+
+					if file.IsDir() {
+						directories = append(directories, path)
+					} else {
+						seenFilePaths[path] = true
+						watcher.newFilePaths <- path
 					}
 				}
 			}

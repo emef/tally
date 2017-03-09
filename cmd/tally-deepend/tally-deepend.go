@@ -18,6 +18,7 @@ type RecordCounterService struct {
 }
 
 var ok = &pb.RecordCounterResponse{Ok: true}
+var bulkOk = &pb.BulkRecordCounterResponse{Ok: true}
 
 func (svc *RecordCounterService) RecordCounter(
 	ctx context.Context,
@@ -26,6 +27,17 @@ func (svc *RecordCounterService) RecordCounter(
 	svc.shard.RecordCounter(request)
 
 	return ok, nil
+}
+
+func (svc *RecordCounterService) BulkRecordCounter(
+	ctx context.Context,
+	request *pb.BulkRecordCounterRequest) (*pb.BulkRecordCounterResponse, error) {
+
+	for _, request := range request.Requests {
+		svc.shard.RecordCounter(request)
+	}
+
+	return bulkOk, nil
 }
 
 func main() {

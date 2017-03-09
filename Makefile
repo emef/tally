@@ -41,7 +41,7 @@ proto:
 test:
 	go test -v -cpu 1,4 ./...
 
-docker-build:
+docker-build: test
 	docker build -t emef/tally .
 
 docker-push: docker-build
