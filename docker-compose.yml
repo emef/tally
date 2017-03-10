@@ -60,7 +60,7 @@ services:
   reddit-counter:
     image: emef/reddit-counter:latest
     command: [
-      "reddit-counter"
+      "reddit-counter",
       "-endpoint", "deepend:5019"
     ]
     links:
