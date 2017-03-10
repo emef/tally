@@ -14,8 +14,8 @@ services:
       "-writer_flush_every", "10",
       "-write_directory", "/var/lib/data"
     ]
-    expose:
-      - "5019"
+    ports:
+      - "5019:5019"
 
   deepend-json:
     image: emef/tally:latest
@@ -41,7 +41,7 @@ services:
       "-index_directory", "/var/lib/data"
     ]
     ports:
-      - "5020"
+      - "5020:5020"
 
   backend-json:
     image: emef/tally:latest
