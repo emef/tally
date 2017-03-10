@@ -56,3 +56,12 @@ services:
       - backend
     ports:
       - "8081:8081"
+
+  reddit-counter:
+    image: emef/reddit-counter:latest
+    command: [
+      "reddit-counter"
+      "-endpoint", "deepend:5019"
+    ]
+    links:
+      - deepend
