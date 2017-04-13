@@ -1,0 +1,53 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    mar1gin: 0;
+}
+
+#bar {
+    width: 100%;
+    height: 40px;
+    background: #eee;
+}
+
+#date-picker {
+    width: 200px;
+}
+
+#date-picker .date-option {
+    width: 100%;
+    height: 1.8em;
+    display: none;
+}
+
+#date-picker .date-option.selected {
+    display: block;
+    background: steelblue;
+}
+
+#custom-range {
+    display: inline-block;
+}
+
+#start, #end {
+    visibility: hidden;
+    float: left;
+    width: 0;
+    height: 1em;
+    padding: 0;
+    border: 0;
+    margin: 0;
+}
+
+.chart {
+    display: inline-block;
+    margin: 10px;
+    height: 250px;
+    width: 400px;
+}
+
+.chart svg {
+    height: 250px;
+    width: 400px;
+}

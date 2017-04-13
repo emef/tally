@@ -43,6 +43,8 @@ func (indexer *Indexer) Get(
 }
 
 func (indexer *Indexer) start() {
+	defer close(indexer.done)
+
 	for {
 		select {
 		case block := <-indexer.blocks:

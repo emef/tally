@@ -49,6 +49,8 @@ func main() {
 		"writer_flush_every", 300, "Seconds before writer thread flushes")
 	writeDirectory := flag.String(
 		"write_directory", "", "Directory to write flushed data")
+	compactorRunEvery := flag.Int(
+		"compactor_run_every", 300, "Seconds between running file compactor")
 
 	flag.Parse()
 
@@ -58,6 +60,9 @@ func main() {
 			FlushEvery: time.Second * time.Duration(*workerFlushEvery)},
 		WriterConfig: &deepend.WriterConfig{
 			FlushEvery:    time.Second * time.Duration(*writerFlushEvery),
+			BaseDirectory: *writeDirectory},
+		CompactorConfig: &deepend.CompactorConfig{
+			RunEvery:      time.Second * time.Duration(*compactorRunEvery),
 			BaseDirectory: *writeDirectory}})
 
 	service := &RecordCounterService{shard}

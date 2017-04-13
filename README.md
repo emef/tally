@@ -14,8 +14,6 @@ PROTOC=/usr/local/bin/protoc make clean all install`
 
 todo (semi-prioritized order)
 
-* client package(s)
-* testing app for data collection
 * frontend for charts / dashboards
 * process to clean-up/merge intra-hourly files (compactor)
 * convert to docker swarm

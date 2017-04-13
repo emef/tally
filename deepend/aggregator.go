@@ -52,6 +52,16 @@ func (aggregator *CounterAggregator) AddInPlace(
 	}
 }
 
+func (aggregator *CounterAggregator) AddBlockInPlace(block *pb.RecordBlock) {
+	for _, entry := range block.Entries {
+		aggregator.AddInPlace(
+			block.NameCodeMapping[entry.Key.NameCode],
+			block.SourceCodeMapping[entry.Key.SourceCode],
+			entry.Key.EpochMinute,
+			entry.Values)
+	}
+}
+
 func (aggregator *CounterAggregator) AsBlock() *pb.RecordBlock {
 	entries := make([]*pb.RecordEntry, 0, len(aggregator.counters))
 	for key, counter := range aggregator.counters {

@@ -51,6 +51,8 @@ func (writer *FlushWriter) GetAggregatorChannel() chan *CounterAggregator {
 func (writer *FlushWriter) start() {
 	ticker := time.NewTicker(writer.config.FlushEvery)
 	defer ticker.Stop()
+	defer close(writer.done)
+	defer close(writer.aggregators)
 
 	combinedAggregator := NewCounterAggregator()
 
@@ -66,7 +68,6 @@ func (writer *FlushWriter) start() {
 
 		case <-writer.done:
 			if len(writer.aggregators) == 0 {
-				close(writer.aggregators)
 				flushAggregator(combinedAggregator, writer.config)
 				return
 			}

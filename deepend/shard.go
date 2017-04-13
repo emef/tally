@@ -8,16 +8,19 @@ type CounterShard struct {
 	dispatcher *RequestDispatcher
 	workers    []*AggregatorWorker
 	writer     *FlushWriter
+	compactor  *Compactor
 }
 
 type ShardConfig struct {
 	Workers          int
 	AggregatorConfig *AggregatorConfig
 	WriterConfig     *WriterConfig
+	CompactorConfig  *CompactorConfig
 }
 
 func NewCounterShard(config *ShardConfig) *CounterShard {
 	writer := CreateAndStartFlushWriter(config.WriterConfig)
+	compactor := CreateAndStartCompactor(config.CompactorConfig)
 
 	workers := make([]*AggregatorWorker, config.Workers)
 	for i := range workers {
@@ -32,12 +35,13 @@ func NewCounterShard(config *ShardConfig) *CounterShard {
 
 	dispatcher := NewRequestDispatcher(requestChannels)
 
-	return &CounterShard{dispatcher, workers, writer}
+	return &CounterShard{dispatcher, workers, writer, compactor}
 }
 
 func (shard *CounterShard) Stop() {
 	// TODO: more graceful shutdown? potential data loss here
 	shard.writer.Stop()
+	shard.compactor.Stop()
 	for _, worker := range shard.workers {
 		worker.Stop()
 	}

@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/css/all.css" />
+    <link rel="stylesheet" href="/static/css/pikaday.css">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+
+  <body>
+    <div id="bar">
+      <div id="date-picker">
+        <div id="last-day" class="date-option">Last Day</div>
+        <div id="last-week" class="date-option">Last Week</div>
+        <div id="last-month" class="date-option">Last Month</div>
+        <div id="custom" class="date-option selected">
+          Custom:
+          <div id="custom-range">
+            <input type="text" disabled id="start">
+            <input type="text" disabled id="range-text"></div>
+          </div>
+      </div>
+    </div>
+    </div>
+
+    <script src="/static/js/polyfill.js"></script>
+    <script src="/static/js/pikaday.js"></script>
+    <script src="/static/js/bar.js"></script>
+    <script src="/static/js/chart.js"></script>
+    <script src="/static/js/controller.js"></script>
+</body>
+</html>

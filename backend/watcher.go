@@ -44,6 +44,8 @@ func (watcher *DirectoryWatcher) GetNewFilePaths() chan string {
 func (watcher *DirectoryWatcher) start() {
 	ticker := time.NewTicker(watcher.checkEvery)
 	defer ticker.Stop()
+	defer close(watcher.done)
+	defer close(watcher.newFilePaths)
 
 	seenFilePaths := make(map[string]bool)
 
@@ -53,7 +55,7 @@ func (watcher *DirectoryWatcher) start() {
 			directories := make([]string, len(watcher.directories))
 			copy(directories, watcher.directories)
 
-			for ; len(directories) > 0; {
+			for len(directories) > 0 {
 				directory := directories[0]
 				directories = directories[1:len(directories)]
 
@@ -82,7 +84,6 @@ func (watcher *DirectoryWatcher) start() {
 			}
 
 		case <-watcher.done:
-			close(watcher.newFilePaths)
 			return
 		}
 	}

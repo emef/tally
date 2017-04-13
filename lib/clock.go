@@ -11,7 +11,7 @@ func init() {
 	ticker := time.NewTicker(time.Second)
 	go func() {
 		for {
-			<- ticker.C
+			<-ticker.C
 			epochMinute = calcNowEpochMinute()
 		}
 	}()

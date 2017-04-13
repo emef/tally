@@ -2,14 +2,13 @@ package main
 
 import (
 	"flag"
-	"io/ioutil"
 	"log"
 	"net"
 	"time"
 
 	"github.com/emef/tally/backend"
+	"github.com/emef/tally/lib"
 	"github.com/emef/tally/pb"
-	"github.com/golang/protobuf/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -46,33 +45,8 @@ func main() {
 
 	watcher := backend.CreateAndStartDirectoryWatcher(
 		[]string{*indexDirectory}, time.Second)
-
-	println("starting...")
-
-	blocks := make(chan *pb.RecordBlock)
-	go func() {
-		for path := range watcher.GetNewFilePaths() {
-			println(path)
-			data, err := ioutil.ReadFile(path)
-			// TODO: error handling
-			if err != nil {
-				println("error reading file")
-				continue
-			}
-
-			block := &pb.RecordBlock{}
-			err = proto.Unmarshal(data, block)
-			if err != nil {
-				println("error unmarshalling")
-			}
-
-			println("ingested block")
-			blocks <- block
-		}
-	}()
-
-	indexer := backend.CreateAndStartIndexer(blocks)
-
+	reader := lib.CreateAndStartBlockReader(watcher.GetNewFilePaths(), 10)
+	indexer := backend.CreateAndStartIndexer(reader.GetBlocks())
 	service := &QueryCounterService{indexer}
 
 	lis, err := net.Listen("tcp", string(*port))
